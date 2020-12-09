@@ -1,61 +1,93 @@
+-----PRIMERAMENTE TENEMOS QUE DARNOS CUENTA QUE VAMOS A TRABAJAR EN LA BASE DE DATOS CORRECTA EN ESTE CASO "KINDER"----
+----PARA ESO USAMOS EL SIGUIENTE COMANDO----
 use Kinder
-
+----MOSTRAMOS LAS TABLAS CREADAS EN LA BASE DE DATOS
+--TABLA ESTUDIANTE---
 select * from Estudiante
+--TABLA REPRESENTANTE---
 Select * from Representante
-
-select e.ECédula CedulaEstudiante , r.Rcédula CedulaRepresentante from  Estudiante as e inner join Representante as r on r.Rcédula=e.CedulaR
-
-select * from [Cita Médica]
+--TABLA CITA MEDICA---
+select * from [Cita MÃ©dica]
+--TABLA DOCTOR--
 Select * from Doctor
-
+--TABLA PROFESIONAL--
 select * from Profesional
-Select * from ProgramaDeEducación
-
-select e.ENombres, e.EApellidos, e.ECédula, c.DcédulaC, c.Diagnostico,c.Medicamentos, c.Fecha , d.Dnombre,d.Dapellido,d.Dnacionalidad  from Estudiante as e 
-	inner join [Cita Médica] as c on e.ECédula=c.EcédulaC 
-	inner join Doctor as d on d.Dcédula=c.DcédulaC
-
-----where --
-select * from Representante
-where Rgénero like 'Femenino'
-order by Rnombres
-
+--TABLA PROGRAMADEEDUCACION---
+Select * from ProgramaDeEducaciÃ³n
 
 -----PRIMER CONSULTA---
-----¿que estudiante no tiene a su madre de forma activa en su vida?-----
+----Â¿que estudiante no tiene a su madre de forma activa en su vida?-----
 
-select e.ECédula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos,e.EGénero as [Apellido del estudiante], 
-	r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],r.Rgénero as [Genero del representante Activo en su vida] 
+select e.ECÃ©dula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos [Apellido del estudiante],
+		e.EGÃ©nero as [Genero del estudiante], 
+		r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],
+		r.RgÃ©nero as [Genero del representante Activo en su vida] 
 		from Estudiante as e inner join Representante as r 
-			on r.Rcédula=e.CedulaR
-			where Rgénero like 'Masculino'
-
-----¿que estudiante no tiene a su padre de forma activa en su vida?-----
-
-select e.ECédula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos,e.EGénero as [Apellido del estudiante], 
-	r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],r.Rgénero as [Genero del representante Activo en su vida] 
-		from Estudiante as e inner join Representante as r 
-			on r.Rcédula=e.CedulaR
-			where Rgénero like 'Femenino'
-
+			on r.RcÃ©dula=e.CedulaR
+			where RgÃ©nero like 'Masculino' 
+			
 ------SEGUNDA CONSULTA-----
+----Â¿que estudiante no tiene a su padre de forma activa en su vida?-----
+
+select e.ECÃ©dula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos as [Apellido del estudiante],e.EGÃ©nero [GÃ©nero], 
+	r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],
+	r.RgÃ©nero as [Genero del representante Activo en su vida] 
+		from Estudiante as e inner join Representante as r 
+			on r.RcÃ©dula=e.CedulaR
+			where RgÃ©nero like 'Femenino'
+
+---TERCER CONSULTA
 -----	Cantidad de calificaciones regulares, buenas y excelentes en cada actividad por cada infante.----
 select * from Estudiante
-select * from ProgramaDeEducación
+select * from ProgramaDeEducaciÃ³n
 
-select e.ECédula,e.ENombres, e.EApellidos ,Rendimiento, COUNT(Rendimiento) as CantidadDeCalificaciones
-from ProgramaDeEducación as pe inner join Estudiante as e on  e.ECédula=pe.CedulaEst 
-group by Rendimiento, e.ECédula,e.ENombres, e.EApellidos
+select e.ECÃ©dula [Cedula del Estudiante],e.ENombres [Nombre Del Estudiante], e.EApellidos [Apellido Del Estudiante],Rendimiento, 
+		COUNT(Rendimiento) as CantidadDeCalificaciones
+		from ProgramaDeEducaciÃ³n as pe inner join Estudiante as e on  e.ECÃ©dula=pe.CedulaEst 
+		group by Rendimiento, e.ECÃ©dula,e.ENombres, e.EApellidos 
 
----?¿--
+---SUMATORIA GENERAL--
 select Rendimiento, COUNT (Rendimiento)as CantidadDeCalificaciones
-from ProgramaDeEducación
-group by Rendimiento
+from ProgramaDeEducaciÃ³n
+group by Rendimiento 
 
------TERCER CONSULTA
+
+-----CUARTA CONSULTA
 -----	Cantidad de profesores hombres y mujeres que tiene cada programa.--
 select * from Profesional
 
-select ProgramaEducativo,ProfGénero, COUNT(ProfGénero) as CantidadDeProfesores
+select ProgramaEducativo,ProfGÃ©nero, COUNT(ProfGÃ©nero) as CantidadDeProfesores
 from Profesional
-group by ProfGénero, ProgramaEducativo
+group by ProfGÃ©nero, ProgramaEducativo
+
+
+
+
+
+---ANEXO---
+---CONSULTAS PROPIAS---
+----MOSTRAR EL NUMERO DE CEDULA DE ESTUDIANTES Y EL REPRESENTANTE
+		select e.ECÃ©dula CedulaEstudiante , r.RcÃ©dula CedulaRepresentante 
+			from  Estudiante as e inner join Representante as r on r.RcÃ©dula=e.CedulaR
+
+--MOSTRAR DATOS DEL ESTUDIANTE ENFERMO, CON LOS DATOS DEL DOCTOR, UN DIAGNOSTICOS DE LA CITA MEDICA, MEDICAMENTOS A TOMAR Y LA FECHA DE LA CITA
+		select e.ENombres, e.EApellidos, e.ECÃ©dula, c.DcÃ©dulaC,d.Dnombre,d.Dapellido,d.Dnacionalidad , c.Diagnostico,c.Medicamentos, c.Fecha   
+			from Estudiante as e 
+			inner join [Cita MÃ©dica] as c on e.ECÃ©dula=c.EcÃ©dulaC 
+			inner join Doctor as d on d.DcÃ©dula=c.DcÃ©dulaC
+
+--MOSTRAR DATOS DEL ESTUDIANTE ENFERMO, CON LOS DATOS DEL DOCTOR, UN DIAGNOSTICOS DE LA CITA MEDICA, MEDICAMENTOS A TOMAR Y LA FECHA DE LA CITA 
+---DE MANERA MAS CLARA Y PRECISA PARA UN USUARIO
+		select e.ENombres as [Nombre Del Estudiante], e.EApellidos as [Apellido Del Estudiante], e.ECÃ©dula as [Cedula del estudiante],
+			c.DcÃ©dulaC [Cedula del Doctor],d.Dnombre [Nombre del Doctor],d.Dapellido [Apellido del Doctor], d.Dnacionalidad [Nacionalidad] ,
+			c.Diagnostico [Diagnostico],c.Medicamentos [Medicamentos a tomar], c.Fecha [Fecha de la cita ]   
+			from Estudiante as e 
+			inner join [Cita MÃ©dica] as c on e.ECÃ©dula=c.EcÃ©dulaC 
+			inner join Doctor as d on d.DcÃ©dula=c.DcÃ©dulaC
+
+
+----where --
+-- MOSTART DATOS DE LOS REPRESENTANTE DE GENERO FEMENINO
+select * from Representante
+where RgÃ©nero like 'Femenino'
+order by Rnombres
