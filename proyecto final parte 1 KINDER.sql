@@ -13,81 +13,71 @@ Select * from Doctor
 --TABLA PROFESIONAL--
 select * from Profesional
 --TABLA PROGRAMADEEDUCACION---
-Select * from ProgramaDeEducación
-
+Select * from ProgramaDeEducacion
+--TABLA TIPODEREPRESENTANTE
+select * from TipoDeRepresentante
 -----PRIMER CONSULTA---
-----¿que estudiante no tiene a su madre de forma activa en su vida?-----
-
+----¿QUE ESTUDIANTES SON REPRESENTADOS POR LA MADRE DE FAMILIA?-----
 select e.ECédula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos [Apellido del estudiante],
 		e.EGénero as [Genero del estudiante], 
 		r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],
-		r.Rgénero as [Genero del representante Activo en su vida] 
+		r.Rgénero as Género  , t.ParentescoDelRepresentado
 		from Estudiante as e inner join Representante as r 
-			on r.Rcédula=e.CedulaR
-			where Rgénero like 'Masculino' 
+			on r.Rcédula=e.CedulaR inner join TipoDeRepresentante as t on t.Tcedula=r.Rcédula
+			where ParentescoDelRepresentado like 'MAMÁ'
 			
-------SEGUNDA CONSULTA-----
-----¿que estudiante no tiene a su padre de forma activa en su vida?-----
 
-select e.ECédula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos as [Apellido del estudiante],e.EGénero [Género], 
-	r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],
-	r.Rgénero as [Genero del representante Activo en su vida] 
+---SEGUNDA CONSULTA---
+----¿ESTUDIANTES REPRESENTADOS POR EL PAPÁ?-----
+select e.ECédula as [Cedula de estudiante], e.ENombres as [Nombre de estudiante], e.EApellidos [Apellido del estudiante],
+		e.EGénero as [Genero del estudiante], 
+		r.Rnombres as [Nombre del representante], r.Rapellidos as [Apellido del representante],
+		r.Rgénero as [Genero] , t.ParentescoDelRepresentado
 		from Estudiante as e inner join Representante as r 
-			on r.Rcédula=e.CedulaR
-			where Rgénero like 'Femenino'
+			on r.Rcédula=e.CedulaR inner join TipoDeRepresentante as t on t.Tcedula=r.Rcédula
+			where ParentescoDelRepresentado like 'PAPÁ'
 
 ---TERCER CONSULTA
 -----	Cantidad de calificaciones regulares, buenas y excelentes en cada actividad por cada infante.----
 select * from Estudiante
-select * from ProgramaDeEducación
+select * from ProgramaDeEducacion
 
 select e.ECédula [Cedula del Estudiante],e.ENombres [Nombre Del Estudiante], e.EApellidos [Apellido Del Estudiante],Rendimiento, 
 		COUNT(Rendimiento) as CantidadDeCalificaciones
-		from ProgramaDeEducación as pe inner join Estudiante as e on  e.ECédula=pe.CedulaEst 
+		from ProgramaDeEducacion as pe inner join Estudiante as e on  e.ECédula=pe.CedulaEst 
 		group by Rendimiento, e.ECédula,e.ENombres, e.EApellidos 
 
----SUMATORIA GENERAL--
-select Rendimiento, COUNT (Rendimiento)as CantidadDeCalificaciones
-from ProgramaDeEducación
-group by Rendimiento 
+				---SUMATORIA GENERAL--
+				select Rendimiento, COUNT (Rendimiento)as CantidadDeCalificaciones
+				from ProgramaDeEducacion
+				group by Rendimiento 
+
+---CUARTA CONSULTA--
+----Mostrar datos del estudiante (nombre-apellidos-cedula-fecha de nacimiento) y calcular cuantos años actualmente tiene cada estudiante
+select e.ECédula as CedulaDeEstudiante, e.ENombres as NombreDelEstudiante, e.EApellidos as ApellidoDelEstudiante, 
+		e.FechaDeNacimiento,  DATEDIFF(yy, FechaDeNacimiento, GETDATE())as AñosActualmente
+		from Estudiante as e
 
 
------CUARTA CONSULTA
------	Cantidad de profesores hombres y mujeres que tiene cada programa.--
-select * from Profesional
-
-select ProgramaEducativo,ProfGénero, COUNT(ProfGénero) as CantidadDeProfesores
-from Profesional
-group by ProfGénero, ProgramaEducativo
-
-
-
-
-
----ANEXO---
----CONSULTAS PROPIAS---
-----MOSTRAR EL NUMERO DE CEDULA DE ESTUDIANTES Y EL REPRESENTANTE
-		select e.ECédula CedulaEstudiante , r.Rcédula CedulaRepresentante 
-			from  Estudiante as e inner join Representante as r on r.Rcédula=e.CedulaR
-
---MOSTRAR DATOS DEL ESTUDIANTE ENFERMO, CON LOS DATOS DEL DOCTOR, UN DIAGNOSTICOS DE LA CITA MEDICA, MEDICAMENTOS A TOMAR Y LA FECHA DE LA CITA
-		select e.ENombres, e.EApellidos, e.ECédula, c.DcédulaC,d.Dnombre,d.Dapellido,d.Dnacionalidad , c.Diagnostico,c.Medicamentos, c.Fecha   
+----OTRAS CONSULTAS----
+----MOSTRAR DATOS DEL ESTUDIANTES, CUANTOS AÑOS TIENE, ADEMAS CONOCER CUANTOS MESES TIENE DE NACIDO, Y CUANTOS DIAS TIENE DE NACIDO
+select e.ECédula as CedulaDeEstudiante, e.ENombres as NombreDelEstudiante, e.EApellidos as ApellidoDelEstudiante, 
+		e.FechaDeNacimiento,  DATEDIFF(yy, FechaDeNacimiento, GETDATE())as AñosActualmente
+		,DATEDIFF(mm, FechaDeNacimiento , GETDATE()) as Meses 
+		, DATEDIFF(dd, FechaDeNacimiento , GETDATE()) as Días 
+		from Estudiante as e
+----MOSTRAR DATOS DEL ESTUDIANTE, CON LOS DATOS DEL DOCTOR, UN DIAGNOSTICOS DE LA CITA MEDICA, MEDICAMENTOS A TOMAR Y LA FECHA DE LA CITA
+select e.ENombres, e.EApellidos, e.ECédula, c.DcédulaC,d.Dnombre,d.Dapellido,d.Dnacionalidad , c.Diagnostico,c.Medicamentos, c.Fecha   
 			from Estudiante as e 
 			inner join [Cita Médica] as c on e.ECédula=c.EcédulaC 
 			inner join Doctor as d on d.Dcédula=c.DcédulaC
 
---MOSTRAR DATOS DEL ESTUDIANTE ENFERMO, CON LOS DATOS DEL DOCTOR, UN DIAGNOSTICOS DE LA CITA MEDICA, MEDICAMENTOS A TOMAR Y LA FECHA DE LA CITA 
----DE MANERA MAS CLARA Y PRECISA PARA UN USUARIO
-		select e.ENombres as [Nombre Del Estudiante], e.EApellidos as [Apellido Del Estudiante], e.ECédula as [Cedula del estudiante],
-			c.DcédulaC [Cedula del Doctor],d.Dnombre [Nombre del Doctor],d.Dapellido [Apellido del Doctor], d.Dnacionalidad [Nacionalidad] ,
-			c.Diagnostico [Diagnostico],c.Medicamentos [Medicamentos a tomar], c.Fecha [Fecha de la cita ]   
-			from Estudiante as e 
-			inner join [Cita Médica] as c on e.ECédula=c.EcédulaC 
-			inner join Doctor as d on d.Dcédula=c.DcédulaC
-
-
-----where --
--- MOSTART DATOS DE LOS REPRESENTANTE DE GENERO FEMENINO
-select * from Representante
-where Rgénero like 'Femenino'
-order by Rnombres
+---CONSULTAR EL 50% DE ESTUDIANTES MATRICULADOS EN LOS PROGRAMAS DE EDUCACION, MOSTRAR DATOS DEL ESTUDIANTE, DEL PROFESIONAL DE LA CLASE, EL CODIGO DE LA ACTIVIDAD. 
+select top 50  percent e.ECédula as CedulaDelAlumno, e.ENombres as NombreDelAlumno, e.EApellidos as ApellidoDelAlumno, e.Ecorreo as correo, 
+		e.EGénero as genero, r.Rcédula as CeduladelRepresentante, r.Rnombres as NombreDelRepresentante,
+		r.Rapellidos as ApellidoDelRepresentante, pe.CodigoA as codigoDelprograma ,a.nombre as NombreDelPrograma , 
+		p.ProfNombres as NombreDelProfesor, p.ProfApellidos as ApellidoDelProfesor
+			from ProgramaDeEducacion as pe inner join Estudiante as e on pe.CedulaEst=e.ECédula
+			inner join Representante as r on e.CedulaR=r.Rcédula
+			inner join Actividad as a on pe.CodigoA=a.codigo
+			inner join Profesional as p on pe.CédulaProf=p.ProfCédula
